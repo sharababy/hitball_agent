@@ -11,6 +11,8 @@ from torch.autograd import Variable
 
 def GameStart(model,options,optimizer,ceriterion):
 
+    num_games_played = 0
+
     obs = options.observation
 
     pygame.init()
@@ -21,8 +23,8 @@ def GameStart(model,options,optimizer,ceriterion):
 
     diff_bg = (255, 255, 0)
 
-    ww = 800
-    wh = 600
+    ww = 400
+    wh = 300
 
     fenster = pygame.display.set_mode((ww, wh))
     pygame.mouse.set_visible(0)
@@ -239,6 +241,8 @@ def GameStart(model,options,optimizer,ceriterion):
                 #print(mvsp_baelle)
                 zeit_zaehler = 0
 
+            reward = round(time_count/fps, 2) + 1
+
             for element in baelle:
                 if player.colliderect(element):
                     # fenster.blit(explosion, (player.left-explosion.get_rect().width/2+12, player.top-explosion.get_rect().height/2+12))
@@ -248,7 +252,7 @@ def GameStart(model,options,optimizer,ceriterion):
                 
                     x = 0
                     end = 1
-                    reward = -1
+                    reward = -2 - round(time_count/fps, 2)
                     player.left = ww/2 - player.width/2
                     player.top = wh/2 - player.height/2
 
@@ -259,17 +263,17 @@ def GameStart(model,options,optimizer,ceriterion):
             if not player.colliderect(0, 0, ww, wh):            
                 x = 0
                 end = 1
-                reward = -1
+                reward = -2 - round(time_count/fps, 2)
                 player.left = ww/2 - player.width/2
                 player.top = wh/2 - player.height/2
 
             pygame.event.pump()
             image_data = pygame.surfarray.array3d(pygame.display.get_surface())
-            agent_input = Image.fromarray(image_data).resize((200,150)).convert(mode='L')
+            agent_input = Image.fromarray(image_data).resize((80,60)).convert(mode='L')
             agent_input = np.asarray(agent_input).astype(np.float32)
             # agent_input = Image.fromarray(np.asarray(image_data).astype(np.float32))
             # agent_input = agent_input.rotate(-90, expand=1 ).resize((400,300)).convert('L')
-            agent_ouput,obs = step_model(agent_input,model,optimizer,ceriterion,obs,reward,action,options.batch_size,options.gamma)
+            agent_ouput,obs = step_model(agent_input,model,optimizer,ceriterion,obs,reward,action,options)
             action = np.argmax(agent_ouput)
             # print(action)
             # print(obs)
@@ -281,7 +285,12 @@ def GameStart(model,options,optimizer,ceriterion):
             x = 1
             # reset reward
             reward = 1
+            num_games_played += 1
             print("time: " + str(round(time_count/fps, 2)) + " seconds.")
+            if num_games_played % options.save_checkpoint_freq == 0:
+                print("saving model",num_games_played)
+
+                torch.save(model.state_dict(),"agent1")
             # while x == 1:
             #     for event in pygame.event.get():
             #         if event.type == KEYDOWN:
@@ -307,12 +316,15 @@ def GameStart(model,options,optimizer,ceriterion):
 
 
 
-def step_model(agent_input,model,optimizer,ceriterion,obs,reward,prev_action,batch_size,gamma):
+def step_model(agent_input,model,optimizer,ceriterion,obs,reward,prev_action,options):
 
-    print("reward",reward,"obs",obs)
+    # print("reward",reward,"obs",obs)
 
     if reward == -1:
         terminal = True
+        if model.epsilon > options.final_e:
+            delta = (options.init_e - options.final_e)/options.exploration
+            model.epsilon -= delta
     else:
         terminal = False
 
@@ -331,7 +343,7 @@ def step_model(agent_input,model,optimizer,ceriterion,obs,reward,prev_action,bat
 
     else:
         optimizer.zero_grad()
-        # total_reward += gamma**model.time_step * r
+        # total_reward += options.gamma**model.time_step * r
 
         action_set = np.zeros(model.actions, dtype=np.float32)
         action_set[prev_action] = 1.0
@@ -340,7 +352,7 @@ def step_model(agent_input,model,optimizer,ceriterion,obs,reward,prev_action,bat
 
         action = model.get_action()
         model.increase_time_step()
-        minibatch = random.sample(model.replay_memory,batch_size)
+        minibatch = random.sample(model.replay_memory,options.batch_size)
 
         
         state_batch = np.array([data[0] for data in minibatch])
@@ -348,8 +360,7 @@ def step_model(agent_input,model,optimizer,ceriterion,obs,reward,prev_action,bat
         reward_batch = np.array([data[2] for data in minibatch])
         next_state_batch = np.array([data[3] for data in minibatch])
         state_batch_var = Variable(torch.from_numpy(state_batch))
-        next_state_batch_var = Variable(torch.from_numpy(next_state_batch),
-                                       volatile=True)
+        next_state_batch_var = Variable(torch.from_numpy(next_state_batch))
         
 
         q_value_next = model.forward(next_state_batch_var)
@@ -362,9 +373,9 @@ def step_model(agent_input,model,optimizer,ceriterion,obs,reward,prev_action,bat
         max_q, _ = torch.max(q_value_next, dim=1)
         # print(max_q.shape)
         # exit()
-        for i in range(batch_size):
+        for i in range(options.batch_size):
             if not minibatch[i][4]:
-                y[i] += gamma*max_q.data[i]
+                y[i] += options.gamma*max_q.data[i]
 
         y = Variable(torch.from_numpy(y))
         action_batch_var = Variable(torch.from_numpy(action_batch))

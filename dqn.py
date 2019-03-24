@@ -19,7 +19,7 @@ ACTIONS = 6
 
 class BrainDQN(nn.Module):
 
-	empty_frame = np.zeros((150, 200), dtype=np.float32)
+	empty_frame = np.zeros((60, 80), dtype=np.float32)
 	empty_state = np.stack((empty_frame, empty_frame, empty_frame, empty_frame), axis=0)
 
 
@@ -47,14 +47,20 @@ class BrainDQN(nn.Module):
 			""" Create dqn, invoked by `__init__`
 			    model structure: conv->conv->fc->fc
 			"""
-			self.conv1 = nn.Conv2d(4,16, kernel_size=8, stride=4, padding=2)
+			self.conv1a = nn.Conv2d(4,8, kernel_size=8, stride=4, padding=2)
+			self.relu1a = nn.ReLU(inplace=True)
+			self.conv1 = nn.Conv2d(8,16, kernel_size=6, stride=3, padding=2)
 			self.relu1 = nn.ReLU(inplace=True)
-			self.conv2 = nn.Conv2d(16, 32, kernel_size=4, stride=3, padding=1)
+			self.conv2 = nn.Conv2d(16, 32, kernel_size=4, stride=2, padding=1)
 			self.relu2 = nn.ReLU(inplace=True)
-			self.map_size = (32, 12, 17)
-			self.fc1 = nn.Linear(self.map_size[0]*self.map_size[1]*self.map_size[2], 128)
+			self.map_size = (32, 2, 3)
+			self.fc1 = nn.Linear(self.map_size[0]*self.map_size[1]*self.map_size[2], 512)
 			self.relu3 = nn.ReLU(inplace=True)
-			self.fc2 = nn.Linear(128, self.actions)
+			self.fc2 = nn.Linear(512, 256)
+			self.relu4 = nn.ReLU(inplace=True)
+			self.fc3 = nn.Linear(256,128)
+			self.relu5 = nn.ReLU(inplace=True)
+			self.fc4 = nn.Linear(128, self.actions)
 
 
 	def get_q_value(self, o):
@@ -63,7 +69,10 @@ class BrainDQN(nn.Module):
 		"""
 		# get Q estimation
 		# print(o.shape)
-		out = self.conv1(o)
+		out = self.conv1a(o)
+		# print(out.shape)
+		out = self.relu1a(out)
+		out = self.conv1(out)
 		# print(out.shape)
 		out = self.relu1(out)
 		out = self.conv2(out)
@@ -75,6 +84,12 @@ class BrainDQN(nn.Module):
 		out = self.relu3(out)
 		# print(out.shape)
 		out = self.fc2(out)
+		out = self.relu4(out)
+		
+		out = self.fc3(out)
+		out = self.relu5(out)
+
+		out = self.fc4(out)
 		# print(out.shape)
 		return out
 
@@ -87,7 +102,7 @@ class BrainDQN(nn.Module):
 			o = torch.from_numpy(o)
 		# o = torch.unsqueeze(o, 0)
 		# print(o.shape)
-		o = o.view(-1,4,150,200)
+		o = o.view(-1,4,60,80)
 		q = self.get_q_value(o)
 
 		return q
@@ -143,12 +158,12 @@ class BrainDQN(nn.Module):
 		"""Get optimal action based on current state
 		"""
 		state = self.current_state
-		state_var = Variable(torch.from_numpy(state), volatile=True).unsqueeze(0)
+		state_var = Variable(torch.from_numpy(state)).unsqueeze(0)
 		if self.use_cuda:
 			state_var = state_var.cuda()
 		q_value = self.forward(state_var)
 		_, action_index = torch.max(q_value, dim=1)
-		action_index = action_index.data[0][0]
+		action_index = action_index.item()
 		action = np.zeros(self.actions, dtype=np.float32)
 		action[action_index] = 1
 		return action
@@ -156,6 +171,7 @@ class BrainDQN(nn.Module):
 	def get_action(self):
 		"""Get action w.r.t current state
 		"""
+		# print(self.epsilon,random.random())
 		if self.train and random.random() <= self.epsilon:
 			return self.get_action_randomly()
 		return self.get_optim_action()

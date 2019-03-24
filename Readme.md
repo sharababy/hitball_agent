@@ -1,36 +1,41 @@
 # Deep Q-Learning HitBalls v1.2 
 
-A Deep Q-Learning baed approach to play HitBalls v1.2
+A Deep Q-Learning based agent that plays HitBalls v1.2
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+To run the agent : `python3 main.py`
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+The follow packages need to be installed:
 
 ```
-Give examples
+pip install pytorch,numpy,pygame
 ```
 
-### Installing
+### Arguments
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+The following arguments can be given:
+- --load_model, default=False, If set true, train the model; otherwise, play game with pretrained model
+- --model_name, default="agent1", Name of the pretrained model
+- --cuda, default=False, If set true, with cuda enabled; otherwise, with CPU only
+- --lr, type=float, learning rate default=0.0001
+- --gamma, type=float, discount rate, default=0.99
+- --batch_size, type=int, batch size, default=32
+- --memory_size, type=int, memory size for experience replay, default=5000
+- --init_e, type=float, initial epsilon for epsilon-greedy exploration,default=1.0
+--final_e, type=float,final epsilon for epsilon-greedy exploration,default=0.1
+- --observation, type=int,random observation number in the beginning before training, default=50
+- --exploration, type=int,number of exploration using epsilon-greedy policy, default=10000
+- --max_episode, type=int,maximum episode of training, default= 20000
+- --save_checkpoint_freq, type=int, episode interval to save checkpoint, default=2000
 
 ```
-Give the example
+chmod +x train.sh
+./train.sh
 ```
 
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Running the tests
 
