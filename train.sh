@@ -1,12 +1,12 @@
 python3 main.py \
 --load_model False \
---model_name agent_file \
+--model_name agent1 \
 --lr 0.0001 \
 --gamma 0.99 \
 --batch_size 32 \
 --memory_size 5000 \
---init_e 0.3 \
---final_e 0.1 \
+--init_e 0.1 \
+--final_e 0.05 \
 --observation 500 \
 --exploration 10000 \
 --max_episode 20000 \

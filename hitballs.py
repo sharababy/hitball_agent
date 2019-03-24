@@ -252,7 +252,7 @@ def GameStart(model,options,optimizer,ceriterion):
                 
                     x = 0
                     end = 1
-                    reward = (-2 * round(time_count/fps, 2)) + 1
+                    reward = (-2 * round(time_count/fps, 2)) - 1
                     player.left = ww/2 - player.width/2
                     player.top = wh/2 - player.height/2
 
@@ -263,7 +263,7 @@ def GameStart(model,options,optimizer,ceriterion):
             if not player.colliderect(0, 0, ww, wh):            
                 x = 0
                 end = 1
-                reward = (-2 * round(time_count/fps, 2)) + 1
+                reward = (-2 * round(time_count/fps, 2)) - 1
                 player.left = ww/2 - player.width/2
                 player.top = wh/2 - player.height/2
 
@@ -289,10 +289,11 @@ def GameStart(model,options,optimizer,ceriterion):
             reward = 1
             num_games_played += 1
             print("time: " + str(round(time_count/fps, 2)) + " seconds.")
-            if num_games_played % options.save_checkpoint_freq == 0:
+
+            if options.mode == "Train" and num_games_played % options.save_checkpoint_freq == 0:
                 print("saving model",num_games_played)
 
-                torch.save(model.state_dict(),"agent1")
+                torch.save(model.state_dict(),options.model_name)
 
             if num_games_played == options.max_episode:
                 print("Max episodes reached! exiting.")

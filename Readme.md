@@ -4,15 +4,21 @@ A Deep Q-Learning based agent that plays HitBalls v1.2
 
 ## Getting Started
 
-To run the agent : `python3 main.py`
+To run the agent:  
+
+```
+chmod +x train.sh
+./train.sh
+```
 
 ### Prerequisites
 
 The follow packages need to be installed:
 
-```
-pip install pytorch numpy pygame
-```
+* [pytorch](https://pytorch.org/) 
+* numpy `pip install numpy`
+* pygame [install instructions](https://cit.dixie.edu/cs/1410/pygame-installation.pdf)
+
 
 ### Arguments
 
@@ -31,10 +37,7 @@ The following arguments can be given:
 - --max_episode, type=int,maximum episode of training, default= 20000
 - --save_checkpoint_freq, type=int, episode interval to save checkpoint, default=2000
 
-```
-chmod +x train.sh
-./train.sh
-```
+
 
 ## Actions, States and Rewards
 
@@ -55,7 +58,7 @@ We use 8 consecutive frames to detect the motion of the balls.
 ### Rewards
 
 The rewards for **not crashing** into a ball or wall is contant every time (= +1). 
-But the reward for **crashing** into a ball or wall increases as the time per game increases in seconds (= -2 - time(in seconds)).
+But the reward for **crashing** into a ball or wall increases as the time per game increases in seconds (= -1 - [2 * time(in seconds)] ) .
 
 
 ## Deep Learning Model Architecute
@@ -100,6 +103,10 @@ This caused more variance in the performance of the model, But in general gave b
 ## Test Setup
 
 You can set the `--mode Test` to run the agent in test mode.
+
+
+## Results
+
 
 
 ## Author

@@ -55,10 +55,12 @@ if args.load_model == "True":
 
 
 if args.mode == "Train":
-	optimizer = optim.Adam(model.parameters(), lr=args.lr)
-	ceriterion = nn.MSELoss()
 	model.set_train()
+else:
+	print("Test Mode Enabled!")
 
+optimizer = optim.Adam(model.parameters(), lr=args.lr)
+ceriterion = nn.MSELoss()
 model.set_initial_state()
 model.time_step = 0
 
