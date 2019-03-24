@@ -2,6 +2,8 @@
 
 A Deep Q-Learning based agent that plays HitBalls v1.2
 
+![](play.gif)
+
 ## Getting Started
 
 To run the agent:  
