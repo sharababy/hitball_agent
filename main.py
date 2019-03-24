@@ -25,7 +25,7 @@ parser.add_argument('--final_e', type=float,
         default=0.1)
 parser.add_argument('--observation', type=int,
         help='random observation number in the beginning before training',
-        default=100000)
+        default=50)
 parser.add_argument('--exploration', type=int,
         help='number of exploration using epsilon-greedy policy',
         default=10000)
@@ -45,6 +45,10 @@ optimizer = optim.RMSprop(model.parameters(), lr=args.lr)
 ceriterion = nn.MSELoss()
 
 model.set_initial_state()
+model.time_step = 0
+model.set_train()
+total_reward = 0
+
 print("Model initialized")
 
 game.GameStart(model,args,optimizer,ceriterion)

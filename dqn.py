@@ -19,7 +19,7 @@ ACTIONS = 6
 
 class BrainDQN(nn.Module):
 
-	empty_frame = np.zeros((400, 300), dtype=np.float32)
+	empty_frame = np.zeros((150, 200), dtype=np.float32)
 	empty_state = np.stack((empty_frame, empty_frame, empty_frame, empty_frame), axis=0)
 
 
@@ -47,14 +47,14 @@ class BrainDQN(nn.Module):
 			""" Create dqn, invoked by `__init__`
 			    model structure: conv->conv->fc->fc
 			"""
-			self.conv1 = nn.Conv2d(1,32, kernel_size=8, stride=4, padding=2)
+			self.conv1 = nn.Conv2d(4,16, kernel_size=8, stride=4, padding=2)
 			self.relu1 = nn.ReLU(inplace=True)
-			self.conv2 = nn.Conv2d(32, 64, kernel_size=4, stride=3, padding=1)
+			self.conv2 = nn.Conv2d(16, 32, kernel_size=4, stride=3, padding=1)
 			self.relu2 = nn.ReLU(inplace=True)
-			self.map_size = (64, 25, 33)
-			self.fc1 = nn.Linear(self.map_size[0]*self.map_size[1]*self.map_size[2], 256)
+			self.map_size = (32, 12, 17)
+			self.fc1 = nn.Linear(self.map_size[0]*self.map_size[1]*self.map_size[2], 128)
 			self.relu3 = nn.ReLU(inplace=True)
-			self.fc2 = nn.Linear(256, self.actions)
+			self.fc2 = nn.Linear(128, self.actions)
 
 
 	def get_q_value(self, o):
@@ -64,14 +64,18 @@ class BrainDQN(nn.Module):
 		# get Q estimation
 		# print(o.shape)
 		out = self.conv1(o)
+		# print(out.shape)
 		out = self.relu1(out)
 		out = self.conv2(out)
 		# print(out.shape)
 		out = self.relu2(out)
 		out = out.view(out.size()[0], -1)
+		# print(out.shape)
 		out = self.fc1(out)
 		out = self.relu3(out)
+		# print(out.shape)
 		out = self.fc2(out)
+		# print(out.shape)
 		return out
 
 	def forward(self, o):
@@ -79,11 +83,13 @@ class BrainDQN(nn.Module):
 		   o -- current observation
 		"""
 		# get Q(s,a;\theta)
-		o = torch.from_numpy(o)
+		if type(o).__module__ == "numpy":
+			o = torch.from_numpy(o)
 		# o = torch.unsqueeze(o, 0)
-		o = o.view(-1,1,300,400)
+		# print(o.shape)
+		o = o.view(-1,4,150,200)
 		q = self.get_q_value(o)
-		q = decode_action(q)
+
 		return q
 
 	def set_train(self):
@@ -131,13 +137,7 @@ class BrainDQN(nn.Module):
 		action[action_index] = 1
 		return action
 
-	def decode_action(self,o):
-		"""Get action randomly
-		"""
-		action = np.zeros(self.actions, dtype=np.float32)
-		action_index = torch.argmax(o)
-		action[action_index] = 1
-		return action
+	
 
 	def get_optim_action(self):
 		"""Get optimal action based on current state
