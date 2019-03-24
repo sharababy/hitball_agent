@@ -62,34 +62,34 @@ But the reward for **crashing** into a ball or wall increases as the time per ga
 
 The model used here is relatively simple.
 
-Conv2d (4,8, kernel_size=8, stride=4, padding=2) 
-  | 
-  |ReLU() 
-  v 
-Conv2d (8,16, kernel_size=6, stride=3, padding=2) 
-  | 
-  |ReLU() 
-  v 
-Conv2d (16, 32, kernel_size=4, stride=2, padding=1) 
-  | 
-  |ReLU() 
-  v 
-FullyConnected (512) 
-  | 
-  |ReLU() 
-  v 
-FullyConnected (256) 
-  | 
-  |ReLU() 
-  v  
-FullyConnected (128) 
-  | 
-  |ReLU() 
-  v 
-FullyConnected (6) 
-  | 
-  v 
-Actions! 
+Conv2d (4,8, kernel_size=8, stride=4, padding=2)   
+  |   
+  |ReLU()   
+  v   
+Conv2d (8,16, kernel_size=6, stride=3, padding=2)   
+  |   
+  |ReLU()   
+  v   
+Conv2d (16, 32, kernel_size=4, stride=2, padding=1)   
+  |   
+  |ReLU()   
+  v   
+FullyConnected (512)   
+  |   
+  |ReLU()   
+  v   
+FullyConnected (256)   
+  |   
+  |ReLU()   
+  v    
+FullyConnected (128)   
+  |   
+  |ReLU()   
+  v   
+FullyConnected (6)   
+  |   
+  v   
+Actions!   
 
 ## Test Setup
 
