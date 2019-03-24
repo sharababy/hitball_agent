@@ -6,9 +6,9 @@ python3 main.py \
 --batch_size 32 \
 --memory_size 5000 \
 --init_e 0.1 \
---final_e 0.05 \
+--final_e 0.01 \
 --observation 50 \
 --exploration 10000 \
 --max_episode 20000 \
 --save_checkpoint_freq 10 \
---mode Train
+--mode Test

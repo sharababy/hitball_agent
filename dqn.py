@@ -177,6 +177,7 @@ class BrainDQN(nn.Module):
 		"""Get action w.r.t current state
 		"""
 		# print(self.epsilon,random.random())
+		
 		# if self.train and random.random() <= self.epsilon:
 		# 	return self.get_action_randomly()
 		return self.get_optim_action()
