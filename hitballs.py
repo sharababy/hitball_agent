@@ -241,7 +241,7 @@ def GameStart(model,options,optimizer,ceriterion):
                 #print(mvsp_baelle)
                 zeit_zaehler = 0
 
-            reward = round(time_count/fps, 2) + 1
+            reward = 1
 
             for element in baelle:
                 if player.colliderect(element):

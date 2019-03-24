@@ -11,7 +11,7 @@ To run the agent : `python3 main.py`
 The follow packages need to be installed:
 
 ```
-pip install pytorch,numpy,pygame
+pip install pytorch numpy pygame
 ```
 
 ### Arguments
@@ -36,44 +36,65 @@ chmod +x train.sh
 ./train.sh
 ```
 
+## Actions, States and Rewards
 
-## Running the tests
+### Actions
+We assume that the agent can make 6 possible actions:
+* 0 : KeyUp + KeyLeft
+* 1 : KeyUp + KeyRight
+* 2 : KeyUp
+* 3 : KeyLeft
+* 4 : KeyRight
+* 5 : DoNothing
 
-Explain how to run the automated tests for this system
+### States
+The states used are the raw input pixels on the screen, in grey scale (80x60) resolution.
+We use 4 consecutive frames to detect the motion of the balls.
 
-### Break down into end to end tests
 
-Explain what these tests test and why
+### Rewards
 
-```
-Give an example
-```
+The rewards for **not crashing** into a ball or wall is contant every time (= +1). 
+But the reward for **crashing** into a ball or wall increases as the time per game increases in seconds (= -2 - time(in seconds)).
 
-### And coding style tests
 
-Explain what these tests test and why
+## Deep Learning Model Architecute
 
-```
-Give an example
-```
+The model used here is relatively simple.
 
-## Deployment
+Conv2d (4,8, kernel_size=8, stride=4, padding=2) 
+  | 
+  |ReLU() 
+  v 
+Conv2d (8,16, kernel_size=6, stride=3, padding=2) 
+  | 
+  |ReLU() 
+  v 
+Conv2d (16, 32, kernel_size=4, stride=2, padding=1) 
+  | 
+  |ReLU() 
+  v 
+FullyConnected (512) 
+  | 
+  |ReLU() 
+  v 
+FullyConnected (256) 
+  | 
+  |ReLU() 
+  v  
+FullyConnected (128) 
+  | 
+  |ReLU() 
+  v 
+FullyConnected (6) 
+  | 
+  v 
+Actions! 
 
-Add additional notes about how to deploy this on a live system
+## Test Setup
 
-## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
 
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
 ## Author
 
@@ -85,8 +106,10 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Acknowledgments
+## Resources Used to Make this Agent
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* [Flappy Bird With DQN by xmfbit](https://github.com/yenchenlin/DeepLearningFlappyBird)
+* [Using Deep Q-Network to Learn How To Play Flappy Bird
+ by yenchenlin](https://github.com/xmfbit/DQN-FlappyBird)
+* [The HitBalls Game by Jonas Möller](https://www.pygame.org/project/3633/5723)
+* [This awesome post by Intel on Deep Reinforcement Learning ](https://www.intel.ai/demystifying-deep-reinforcement-learning/)
