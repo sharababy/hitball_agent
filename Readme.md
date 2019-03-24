@@ -79,10 +79,10 @@ Conv2d (in_channels=16, out_channels=32, kernel_size=4, stride=2, padding=1)
   |   
   |ReLU()   
   v   
-FullyConnected (512)   
+<!-- FullyConnected (512)   
   |   
   |ReLU()   
-  v   
+  v    -->
 FullyConnected (256)   
   |   
   |ReLU()   
