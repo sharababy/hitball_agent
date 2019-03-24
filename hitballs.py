@@ -212,7 +212,8 @@ def GameStart(model,options,optimizer,ceriterion):
                     baelle[i].top += a
 
             fenster.fill(bg)
-                        
+            # pygame.draw.rect(fenster,(0, 0, 0), (10,10, ww-20, wh-20),3)
+
             player_rect = spieler.get_rect().center
             player_neu = pygame.transform.rotate(spieler, angle_player-180)
             player_neu.get_rect().center = player_rect
@@ -252,24 +253,25 @@ def GameStart(model,options,optimizer,ceriterion):
                 
                     x = 0
                     end = 1
-                    reward = (-2 * round(time_count/fps, 2)) - 1
+                    reward = -3
                     player.left = ww/2 - player.width/2
                     player.top = wh/2 - player.height/2
 
             pygame.display.update()
             clock.tick(fps)
 
+            
 
-            if not player.colliderect(0, 0, ww, wh):            
+            if not player.colliderect(20, 20, ww-40, wh-40):            
                 x = 0
                 end = 1
-                reward = (-2 * round(time_count/fps, 2)) - 1
+                reward = -4
                 player.left = ww/2 - player.width/2
                 player.top = wh/2 - player.height/2
 
             pygame.event.pump()
             image_data = pygame.surfarray.array3d(pygame.display.get_surface())
-            agent_input = Image.fromarray(image_data).resize((80,60)).convert(mode='L')
+            agent_input = Image.fromarray(image_data).resize((150,112)).convert(mode='L')
             # agent_input.save("a.png")
             # exit()
             agent_input = np.asarray(agent_input).astype(np.float32)

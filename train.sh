@@ -1,5 +1,5 @@
 python3 main.py \
---load_model True \
+--load_model False \
 --model_name agent1 \
 --lr 0.0001 \
 --gamma 0.99 \
@@ -7,7 +7,7 @@ python3 main.py \
 --memory_size 5000 \
 --init_e 0.1 \
 --final_e 0.05 \
---observation 500 \
+--observation 50 \
 --exploration 10000 \
 --max_episode 20000 \
 --save_checkpoint_freq 10 \
