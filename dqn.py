@@ -20,7 +20,7 @@ ACTIONS = 6
 class BrainDQN(nn.Module):
 
 	empty_frame = np.zeros((60, 80), dtype=np.float32)
-	empty_state = np.stack((empty_frame, empty_frame, empty_frame, empty_frame), axis=0)
+	empty_state = np.stack((empty_frame, empty_frame, empty_frame, empty_frame, empty_frame, empty_frame, empty_frame, empty_frame), axis=0)
 
 
 	def __init__(self, epsilon=1.0, mem_size = 5000, cuda = False):
@@ -31,6 +31,7 @@ class BrainDQN(nn.Module):
 		"""
 		super(BrainDQN, self).__init__()
 		self.train = None
+		self.screens = []
 		# init replay memory
 		self.replay_memory = deque()
 		# init some parameters
@@ -47,16 +48,17 @@ class BrainDQN(nn.Module):
 			""" Create dqn, invoked by `__init__`
 			    model structure: conv->conv->fc->fc
 			"""
-			self.conv1a = nn.Conv2d(4,8, kernel_size=8, stride=4, padding=2)
+			self.conv1a = nn.Conv2d(8,16, kernel_size=8, stride=4, padding=2)
 			self.relu1a = nn.ReLU(inplace=True)
-			self.conv1 = nn.Conv2d(8,16, kernel_size=6, stride=3, padding=2)
+			self.conv1 = nn.Conv2d(16,32, kernel_size=6, stride=3, padding=2)
 			self.relu1 = nn.ReLU(inplace=True)
-			self.conv2 = nn.Conv2d(16, 32, kernel_size=4, stride=2, padding=1)
+			self.conv2 = nn.Conv2d(32, 64, kernel_size=4, stride=2, padding=1)
 			self.relu2 = nn.ReLU(inplace=True)
-			self.map_size = (32, 2, 3)
-			self.fc1 = nn.Linear(self.map_size[0]*self.map_size[1]*self.map_size[2], 512)
-			self.relu3 = nn.ReLU(inplace=True)
-			self.fc2 = nn.Linear(512, 256)
+			self.map_size = (64, 2, 3)
+			fs = self.map_size[0]*self.map_size[1]*self.map_size[2]
+			# self.fc1 = nn.Linear(, 512)
+			# self.relu3 = nn.ReLU(inplace=True)
+			self.fc2 = nn.Linear(fs, 256)
 			self.relu4 = nn.ReLU(inplace=True)
 			self.fc3 = nn.Linear(256,128)
 			self.relu5 = nn.ReLU(inplace=True)
@@ -80,8 +82,8 @@ class BrainDQN(nn.Module):
 		out = self.relu2(out)
 		out = out.view(out.size()[0], -1)
 		# print(out.shape)
-		out = self.fc1(out)
-		out = self.relu3(out)
+		# out = self.fc1(out)
+		# out = self.relu3(out)
 		# print(out.shape)
 		out = self.fc2(out)
 		out = self.relu4(out)
@@ -102,7 +104,8 @@ class BrainDQN(nn.Module):
 			o = torch.from_numpy(o)
 		# o = torch.unsqueeze(o, 0)
 		# print(o.shape)
-		o = o.view(-1,4,60,80)
+		# exit()
+		o = o.view(-1,8,60,80)
 		q = self.get_q_value(o)
 
 		return q
@@ -172,8 +175,8 @@ class BrainDQN(nn.Module):
 		"""Get action w.r.t current state
 		"""
 		# print(self.epsilon,random.random())
-		# if self.train and random.random() <= self.epsilon:
-		# 	return self.get_action_randomly()
+		if self.train and random.random() <= self.epsilon:
+			return self.get_action_randomly()
 		return self.get_optim_action()
 
 	def increase_time_step(self, time_step=1):

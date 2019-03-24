@@ -7,7 +7,7 @@ import torch.nn as nn
 
 parser = argparse.ArgumentParser(description='DQN agent for HitBall')
 
-parser.add_argument('--load_model', type=bool,  default=True,
+parser.add_argument('--load_model', type=str,  default="True",
         help='If set true, train the model; otherwise, play game with pretrained model')
 parser.add_argument('--model_name',type=str, default="agent1",
         help='Name of the pretrained model')
@@ -39,6 +39,9 @@ parser.add_argument('--save_checkpoint_freq', type=int,
 parser.add_argument('--cuda', action='store_true', default=False,
         help='If set true, with cuda enabled; otherwise, with CPU only')
 
+parser.add_argument('--mode', type=str,default="Train",
+        help='Set to train(Train) or test(Test) mode')
+
 args = parser.parse_args()
 
 
@@ -46,16 +49,19 @@ model = dqn.BrainDQN(epsilon=args.init_e, mem_size=args.memory_size, cuda=args.c
 
 print("Init Epsilon: ", args.init_e)
 
-if args.load_model == True:
+if args.load_model == "True":
 	print("loading model",args.model_name)
 	model.load_state_dict(torch.load(args.model_name))
 
-optimizer = optim.Adam(model.parameters(), lr=args.lr)
-ceriterion = nn.MSELoss()
+
+if args.mode == "Train":
+	optimizer = optim.Adam(model.parameters(), lr=args.lr)
+	ceriterion = nn.MSELoss()
+	model.set_train()
 
 model.set_initial_state()
 model.time_step = 0
-model.set_train()
+
 total_reward = 0
 
 print("Model initialized")

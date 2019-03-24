@@ -252,7 +252,7 @@ def GameStart(model,options,optimizer,ceriterion):
                 
                     x = 0
                     end = 1
-                    reward = -2 - round(time_count/fps, 2)
+                    reward = (-2 * round(time_count/fps, 2)) + 1
                     player.left = ww/2 - player.width/2
                     player.top = wh/2 - player.height/2
 
@@ -263,13 +263,15 @@ def GameStart(model,options,optimizer,ceriterion):
             if not player.colliderect(0, 0, ww, wh):            
                 x = 0
                 end = 1
-                reward = -2 - round(time_count/fps, 2)
+                reward = (-2 * round(time_count/fps, 2)) + 1
                 player.left = ww/2 - player.width/2
                 player.top = wh/2 - player.height/2
 
             pygame.event.pump()
             image_data = pygame.surfarray.array3d(pygame.display.get_surface())
             agent_input = Image.fromarray(image_data).resize((80,60)).convert(mode='L')
+            # agent_input.save("a.png")
+            # exit()
             agent_input = np.asarray(agent_input).astype(np.float32)
             # agent_input = Image.fromarray(np.asarray(image_data).astype(np.float32))
             # agent_input = agent_input.rotate(-90, expand=1 ).resize((400,300)).convert('L')
@@ -291,6 +293,10 @@ def GameStart(model,options,optimizer,ceriterion):
                 print("saving model",num_games_played)
 
                 torch.save(model.state_dict(),"agent1")
+
+            if num_games_played == options.max_episode:
+                print("Max episodes reached! exiting.")
+                exit()
             # while x == 1:
             #     for event in pygame.event.get():
             #         if event.type == KEYDOWN:
@@ -319,6 +325,7 @@ def GameStart(model,options,optimizer,ceriterion):
 def step_model(agent_input,model,optimizer,ceriterion,obs,reward,prev_action,options):
 
     # print("reward",reward,"obs",obs)
+
 
     if reward == -1:
         terminal = True
@@ -352,39 +359,49 @@ def step_model(agent_input,model,optimizer,ceriterion,obs,reward,prev_action,opt
 
         action = model.get_action()
         model.increase_time_step()
-        minibatch = random.sample(model.replay_memory,options.batch_size)
 
-        
-        state_batch = np.array([data[0] for data in minibatch])
-        action_batch = np.array([data[1] for data in minibatch])
-        reward_batch = np.array([data[2] for data in minibatch])
-        next_state_batch = np.array([data[3] for data in minibatch])
-        state_batch_var = Variable(torch.from_numpy(state_batch))
-        next_state_batch_var = Variable(torch.from_numpy(next_state_batch))
-        
+        if options.mode == "Train":
 
-        q_value_next = model.forward(next_state_batch_var)
-        # exit()
-        q_value = model.forward(state_batch_var)
-        
-        y = reward_batch.astype(np.float32)
-        
-        
-        max_q, _ = torch.max(q_value_next, dim=1)
-        # print(max_q.shape)
-        # exit()
-        for i in range(options.batch_size):
-            if not minibatch[i][4]:
-                y[i] += options.gamma*max_q.data[i]
+            minibatch = random.sample(model.replay_memory,options.batch_size)
+            
+            # if len(model.screens) < 8:
+            #     state_batch = np.array([data[0] for data in minibatch])    
+            # else:
+            #     model.screens.pop(0)
+            #     model.screens.append(agent_input)
+            #     state_batch = np.array(model.screens)
+            
+            state_batch = np.array([data[0] for data in minibatch])
+            action_batch = np.array([data[1] for data in minibatch])
+            reward_batch = np.array([data[2] for data in minibatch])
+            next_state_batch = np.array([data[3] for data in minibatch])
+            state_batch_var = Variable(torch.from_numpy(state_batch))
+            next_state_batch_var = Variable(torch.from_numpy(next_state_batch))
+            
 
-        y = Variable(torch.from_numpy(y))
-        action_batch_var = Variable(torch.from_numpy(action_batch))
-        
-        q_value = torch.sum(torch.mul(action_batch_var, q_value), dim=1)
+            q_value_next = model.forward(next_state_batch_var)
+            # exit()
+            q_value = model.forward(state_batch_var)
+            
+            y = reward_batch.astype(np.float32)
+            
+            
+            max_q, _ = torch.max(q_value_next, dim=1)
+            # print(max_q.shape)
+            # exit()
+            for i in range(options.batch_size):
+                if not minibatch[i][4]:
+                    y[i] += options.gamma*max_q.data[i]
 
-        loss = ceriterion(q_value, y)
-        loss.backward()
-        optimizer.step()
+            y = Variable(torch.from_numpy(y))
+            action_batch_var = Variable(torch.from_numpy(action_batch))
+            
+            q_value = torch.sum(torch.mul(action_batch_var, q_value), dim=1)
+
+
+            loss = ceriterion(q_value, y)
+            loss.backward()
+            optimizer.step()
 
         return action,obs
     
