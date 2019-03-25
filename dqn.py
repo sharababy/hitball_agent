@@ -58,13 +58,15 @@ class BrainDQN(nn.Module):
 			self.relu2 = nn.ReLU(inplace=True)
 			self.map_size = (32, 2, 2)
 			fs = self.map_size[0]*self.map_size[1]*self.map_size[2]
-			self.fc1 = nn.Linear(fs, 512)
+			self.fc1 = nn.Linear(fs, 1024)
 			self.relu3 = nn.ReLU(inplace=True)
-			self.fc2 = nn.Linear(512, 256)
+			self.fc2 = nn.Linear(1024, 512)
 			self.relu4 = nn.ReLU(inplace=True)
-			self.fc3 = nn.Linear(256,128)
+			self.fc3 = nn.Linear(512, 256)
 			self.relu5 = nn.ReLU(inplace=True)
-			self.fc4 = nn.Linear(128, self.actions)
+			self.fc4 = nn.Linear(256,128)
+			self.relu6 = nn.ReLU(inplace=True)
+			self.fc5 = nn.Linear(128, self.actions)
 
 
 	def get_q_value(self, o):
@@ -94,6 +96,9 @@ class BrainDQN(nn.Module):
 		out = self.relu5(out)
 
 		out = self.fc4(out)
+		out = self.relu6(out)
+
+		out = self.fc5(out)
 		# print(out.shape)
 		return out	
 
@@ -178,8 +183,8 @@ class BrainDQN(nn.Module):
 		"""
 		# print(self.epsilon,random.random())
 		
-		# if self.train and random.random() <= self.epsilon:
-		# 	return self.get_action_randomly()
+		if self.train and random.random() <= self.epsilon:
+			return self.get_action_randomly()
 		return self.get_optim_action()
 
 	def increase_time_step(self, time_step=1):

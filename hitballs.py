@@ -9,6 +9,12 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
+import os, sys
+
+# set SDL to use the dummy NULL video driver, 
+#   so it doesn't need a windowing system.
+os.environ["SDL_VIDEODRIVER"] = "dummy"
+
 def GameStart(model,options,optimizer,ceriterion):
 
     num_games_played = 0
@@ -253,7 +259,7 @@ def GameStart(model,options,optimizer,ceriterion):
                 
                     x = 0
                     end = 1
-                    reward = -3
+                    reward = -4
                     player.left = ww/2 - player.width/2
                     player.top = wh/2 - player.height/2
 
