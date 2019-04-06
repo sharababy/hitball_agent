@@ -47,26 +47,26 @@ class BrainDQN(nn.Module):
 
 
 	def createQNetwork(self):
-			""" Create dqn, invoked by `__init__`
-			    model structure: conv->conv->fc->fc
-			"""
-			self.conv1a = nn.Conv2d(4,8, kernel_size=8, stride=8, padding=2)
-			self.relu1a = nn.ReLU(inplace=True)
-			self.conv1 = nn.Conv2d(8,16, kernel_size=6, stride=4, padding=2)
-			self.relu1 = nn.ReLU(inplace=True)
-			self.conv2 = nn.Conv2d(16,32, kernel_size=4, stride=2, padding=1)
-			self.relu2 = nn.ReLU(inplace=True)
-			self.map_size = (32, 2, 2)
-			fs = self.map_size[0]*self.map_size[1]*self.map_size[2]
-			self.fc1 = nn.Linear(fs, 1024)
-			self.relu3 = nn.ReLU(inplace=True)
-			self.fc2 = nn.Linear(1024, 512)
-			self.relu4 = nn.ReLU(inplace=True)
-			self.fc3 = nn.Linear(512, 256)
-			self.relu5 = nn.ReLU(inplace=True)
-			self.fc4 = nn.Linear(256,128)
-			self.relu6 = nn.ReLU(inplace=True)
-			self.fc5 = nn.Linear(128, self.actions)
+		""" Create dqn, invoked by `__init__`
+		    model structure: conv->conv->fc->fc
+		"""
+		self.conv1a = nn.Conv2d(4,8, kernel_size=8, stride=8, padding=2)
+		self.relu1a = nn.ReLU(inplace=True)
+		self.conv1 = nn.Conv2d(8,16, kernel_size=6, stride=4, padding=2)
+		self.relu1 = nn.ReLU(inplace=True)
+		self.conv2 = nn.Conv2d(16,32, kernel_size=4, stride=2, padding=1)
+		self.relu2 = nn.ReLU(inplace=True)
+		self.map_size = (32, 2, 2)
+		fs = self.map_size[0]*self.map_size[1]*self.map_size[2]
+		self.fc1 = nn.Linear(fs, 2048)
+		self.relu3 = nn.ReLU(inplace=True)
+		self.fc2 = nn.Linear(2048, 1024)
+		self.relu4 = nn.ReLU(inplace=True)
+		self.fc3 = nn.Linear(1024, 256)
+		self.relu5 = nn.ReLU(inplace=True)
+		self.fc4 = nn.Linear(256,128)
+		self.relu6 = nn.ReLU(inplace=True)
+		self.fc5 = nn.Linear(128, self.actions)
 
 
 	def get_q_value(self, o):
