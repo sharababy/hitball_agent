@@ -5,6 +5,7 @@ from pygame.locals import *
 import PIL.Image as Image
 import numpy as np
 import random
+import time
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -91,6 +92,7 @@ def GameStart(model,options,optimizer,ceriterion):
         fps = 50
         time_count = 0
 
+        start = time.time()
         x = 1
         x2 = 0
         end = 0
@@ -297,8 +299,8 @@ def GameStart(model,options,optimizer,ceriterion):
                 model.epsilon -= delta
             
             num_games_played += 1
-
-            print("time: " + str(round(time_count/fps, 2)) + " seconds. current eps:",model.epsilon)
+            end = time.time()            
+            print("time: " + str(round((end - start), 2)) + " seconds.")
 
             if options.mode == "Train" and num_games_played % options.save_checkpoint_freq == 0:
                 print("saving model",num_games_played)
