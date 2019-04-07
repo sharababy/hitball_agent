@@ -1,5 +1,5 @@
 python3 main.py \
---load_model True \
+--load_model False \
 --model_name agent1 \
 --lr 0.0001 \
 --gamma 0.99 \

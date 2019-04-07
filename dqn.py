@@ -58,15 +58,15 @@ class BrainDQN(nn.Module):
 		self.relu2 = nn.ReLU(inplace=True)
 		self.map_size = (32, 2, 3)
 		fs = self.map_size[0]*self.map_size[1]*self.map_size[2]
-		self.fc1 = nn.Linear(fs, 2048)
+		self.fc1 = nn.Linear(fs, 256)
 		self.relu3 = nn.ReLU(inplace=True)
-		self.fc2 = nn.Linear(2048, 1024)
+		self.fc2 = nn.Linear(256, 128)
 		self.relu4 = nn.ReLU(inplace=True)
-		self.fc3 = nn.Linear(1024, 256)
+		self.fc3 = nn.Linear(128, 64)
 		self.relu5 = nn.ReLU(inplace=True)
-		self.fc4 = nn.Linear(256,128)
+		self.fc4 = nn.Linear(64,32)
 		self.relu6 = nn.ReLU(inplace=True)
-		self.fc5 = nn.Linear(128, self.actions)
+		self.fc5 = nn.Linear(32, self.actions)
 
 
 	def get_q_value(self, o):

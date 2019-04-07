@@ -70,7 +70,7 @@ if args.load_model == "True":
 if args.mode == "Train":
 	model.set_train()
 else:
-	mode.set_eval()
+	model.set_eval()
 	args.observation = 0
 	print("Test Mode Enabled!")
 
