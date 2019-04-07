@@ -258,7 +258,7 @@ def GameStart(model,options,optimizer,ceriterion):
                 
                     x = 0
                     end = 1
-                    reward = -20
+                    reward = min(-10,-(time_count*0.1))
                     player.left = ww/2 - player.width/2
                     player.top = wh/2 - player.height/2
 
@@ -270,7 +270,7 @@ def GameStart(model,options,optimizer,ceriterion):
             if not player.colliderect(20, 20, ww-40, wh-40):            
                 x = 0
                 end = 1
-                reward = -20
+                reward = min(-10,-(time_count*0.1))
                 player.left = ww/2 - player.width/2
                 player.top = wh/2 - player.height/2
 

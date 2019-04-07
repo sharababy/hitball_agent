@@ -50,25 +50,25 @@ class BrainDQN(nn.Module):
 		""" Create dqn, invoked by `__init__`
 		    model structure: conv->conv->fc->fc
 		"""
-		self.conv1a = nn.Conv2d(BrainDQN.input_channels,8, kernel_size=8, stride=4, padding=2)
+		self.conv1a = nn.Conv2d(BrainDQN.input_channels,8, kernel_size=8, stride=3, padding=2)
 		self.relu1a = nn.ReLU(inplace=True)
-		self.conv1 = nn.Conv2d(8,16, kernel_size=6, stride=4, padding=0)
+		self.conv1 = nn.Conv2d(8,16, kernel_size=6, stride=2, padding=0)
 		self.relu1 = nn.ReLU(inplace=True)
 		self.conv2 = nn.Conv2d(16,32, kernel_size=4, stride=2, padding=0)
 		self.relu2 = nn.ReLU(inplace=True)
 		self.conv3 = nn.Conv2d(32,64, kernel_size=3, stride=1, padding=0)
 		self.relu7 = nn.ReLU(inplace=True)
-		self.map_size = (64, 1, 3)
+		self.map_size = (64, 8, 12)
 		fs = self.map_size[0]*self.map_size[1]*self.map_size[2]
-		self.fc1 = nn.Linear(fs, 256)
+		self.fc1 = nn.Linear(fs, 1024)
 		self.relu3 = nn.ReLU(inplace=True)
-		self.fc2 = nn.Linear(256, 128)
+		self.fc2 = nn.Linear(1024, 512)
 		self.relu4 = nn.ReLU(inplace=True)
-		self.fc3 = nn.Linear(128, 64)
+		self.fc3 = nn.Linear(512, 256)
 		self.relu5 = nn.ReLU(inplace=True)
-		self.fc4 = nn.Linear(64,32)
+		self.fc4 = nn.Linear(256,64)
 		self.relu6 = nn.ReLU(inplace=True)
-		self.fc5 = nn.Linear(32, self.actions)
+		self.fc5 = nn.Linear(64, self.actions)
 
 
 	def get_q_value(self, o):
@@ -93,6 +93,7 @@ class BrainDQN(nn.Module):
 		
 		out = out.view(out.size()[0], -1)
 		# print(out.shape)
+		# exit()
 		out = self.fc1(out)
 		out = self.relu3(out)
 		# print(out.shape)
