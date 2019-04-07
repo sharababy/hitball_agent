@@ -64,7 +64,7 @@ print("Init Epsilon: ", args.init_e)
 
 if args.load_model == "True":
 	print("loading model",args.model_name)
-	model.load_state_dict(torch.load(args.model_name))
+	model.load_state_dict(torch.load(args.model_name,map_location=device))
 # ,map_location=device
 
 if args.mode == "Train":
