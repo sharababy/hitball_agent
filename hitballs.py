@@ -292,8 +292,13 @@ def GameStart(model,options,optimizer,ceriterion):
             x = 1
             # reset reward
             reward = 1
+            if model.epsilon > options.final_e:
+                delta = (options.init_e - options.final_e)/options.exploration
+                model.epsilon -= delta
+            
             num_games_played += 1
-            print("time: " + str(round(time_count/fps, 2)) + " seconds.")
+
+            print("time: " + str(round(time_count/fps, 2)) + " seconds. current eps:",model.epsilon)
 
             if options.mode == "Train" and num_games_played % options.save_checkpoint_freq == 0:
                 print("saving model",num_games_played)
@@ -335,13 +340,13 @@ def step_model(agent_input,model,optimizer,ceriterion,obs,reward,prev_action,opt
 
     if reward == -1:
         terminal = True
-        if model.epsilon > options.final_e:
-            delta = (options.init_e - options.final_e)/options.exploration
-            model.epsilon -= delta
+        
     else:
         terminal = False
 
     if obs > 0:
+        # if obs % 500 == 0:
+        #     print(obs)
         obs -= 1
         action = model.get_action_randomly()
         
