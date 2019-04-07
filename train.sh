@@ -1,5 +1,5 @@
 python3 main.py \
---load_model True \
+--load_model False \
 --model_name agent1 \
 --lr 0.0001 \
 --gamma 0.99 \
@@ -11,4 +11,4 @@ python3 main.py \
 --exploration 10000 \
 --max_episode 20000 \
 --save_checkpoint_freq 10 \
---mode Test
+--mode Train

@@ -10,7 +10,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 
 import os, sys
-# os.environ["SDL_VIDEODRIVER"] = "dummy"
+os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 def GameStart(model,options,optimizer,ceriterion):
 
@@ -274,7 +274,7 @@ def GameStart(model,options,optimizer,ceriterion):
 
             pygame.event.pump()
             image_data = pygame.surfarray.array3d(pygame.display.get_surface())
-            agent_input = Image.fromarray(image_data).resize((150,112)).convert(mode='L')
+            agent_input = Image.fromarray(image_data).resize((200,150)).convert(mode='L')
             # agent_input.save("a.png")
             # exit()
             agent_input = np.asarray(agent_input).astype(np.float32)

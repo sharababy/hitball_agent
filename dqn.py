@@ -16,8 +16,8 @@ DoNothing
 '''
 
 ACTIONS = 6
-height = 112
-width = 150
+height = 150
+width = 200
 
 class BrainDQN(nn.Module):
 
@@ -56,7 +56,7 @@ class BrainDQN(nn.Module):
 		self.relu1 = nn.ReLU(inplace=True)
 		self.conv2 = nn.Conv2d(16,32, kernel_size=4, stride=2, padding=1)
 		self.relu2 = nn.ReLU(inplace=True)
-		self.map_size = (32, 2, 2)
+		self.map_size = (32, 2, 3)
 		fs = self.map_size[0]*self.map_size[1]*self.map_size[2]
 		self.fc1 = nn.Linear(fs, 2048)
 		self.relu3 = nn.ReLU(inplace=True)
