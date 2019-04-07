@@ -10,10 +10,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 
 import os, sys
-
-# set SDL to use the dummy NULL video driver, 
-#   so it doesn't need a windowing system.
-# os.environ["SDL_VIDEODRIVER"] = "dummy"
+os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 def GameStart(model,options,optimizer,ceriterion):
 
@@ -403,7 +400,12 @@ def step_model(agent_input,model,optimizer,ceriterion,obs,reward,prev_action,opt
                     y[i] += options.gamma*max_q.data[i]
 
             y = Variable(torch.from_numpy(y))
+
             action_batch_var = Variable(torch.from_numpy(action_batch))
+
+            if model.use_cuda:
+                action_batch_var = action_batch_var.cuda()
+                y = y.cuda()
             
             q_value = torch.sum(torch.mul(action_batch_var, q_value), dim=1)
 

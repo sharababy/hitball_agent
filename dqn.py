@@ -22,8 +22,8 @@ width = 150
 class BrainDQN(nn.Module):
 
 	empty_frame = np.zeros((height,width ), dtype=np.float32)
-	empty_state = np.stack((empty_frame, empty_frame, empty_frame, empty_frame), axis=0)
-
+	empty_state = np.stack((empty_frame, empty_frame, empty_frame, empty_frame, empty_frame, empty_frame, empty_frame, empty_frame), axis=0)
+	input_channels = 8
 
 	def __init__(self, epsilon=1.0, mem_size = 5000, cuda = False):
 		"""Initialization
@@ -50,7 +50,7 @@ class BrainDQN(nn.Module):
 		""" Create dqn, invoked by `__init__`
 		    model structure: conv->conv->fc->fc
 		"""
-		self.conv1a = nn.Conv2d(4,8, kernel_size=8, stride=8, padding=2)
+		self.conv1a = nn.Conv2d(BrainDQN.input_channels,8, kernel_size=8, stride=8, padding=2)
 		self.relu1a = nn.ReLU(inplace=True)
 		self.conv1 = nn.Conv2d(8,16, kernel_size=6, stride=4, padding=2)
 		self.relu1 = nn.ReLU(inplace=True)
@@ -112,7 +112,9 @@ class BrainDQN(nn.Module):
 		# o = torch.unsqueeze(o, 0)
 		# print(o.shape)
 		# exit()
-		o = o.view(-1,4,height,width )
+		o = o.view(-1,BrainDQN.input_channels,height,width )
+		if self.use_cuda:
+			o = o.cuda()
 		q = self.get_q_value(o)
 
 		return q

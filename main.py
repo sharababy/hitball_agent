@@ -45,9 +45,19 @@ parser.add_argument('--mode', type=str,default="Train",
 args = parser.parse_args()
 
 
-model = dqn.BrainDQN(epsilon=args.init_e, mem_size=args.memory_size, cuda=args.cuda)
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+cuda_flag = False
+if device == "cuda:0":
+        cuda_flag = True
+
+model = dqn.BrainDQN(epsilon=args.init_e, mem_size=args.memory_size, cuda=True)
+
+model = model.cuda()
 
 print("Init Epsilon: ", args.init_e)
+
+# print(args.load_model)
 
 if args.load_model == "True":
 	print("loading model",args.model_name)
