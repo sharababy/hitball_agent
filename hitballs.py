@@ -340,7 +340,7 @@ def step_model(agent_input,model,optimizer,ceriterion,obs,reward,prev_action,opt
     # print("reward",reward,"obs",obs)
 
 
-    if reward == -1:
+    if reward < 0 :
         terminal = True
         
     else:
