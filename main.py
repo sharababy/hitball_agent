@@ -70,6 +70,7 @@ if args.load_model == "True":
 if args.mode == "Train":
 	model.set_train()
 else:
+        args.observation = 0
 	print("Test Mode Enabled!")
 
 optimizer = optim.Adam(model.parameters(), lr=args.lr)
