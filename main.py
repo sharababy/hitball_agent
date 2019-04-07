@@ -47,13 +47,16 @@ args = parser.parse_args()
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+print(device)
+
 cuda_flag = False
 if device == "cuda:0":
         cuda_flag = True
 
-model = dqn.BrainDQN(epsilon=args.init_e, mem_size=args.memory_size, cuda=True)
+model = dqn.BrainDQN(epsilon=args.init_e, mem_size=args.memory_size, cuda=cuda_flag)
 
-model = model.cuda()
+if cuda_flag == True:
+        model = model.cuda()
 
 print("Init Epsilon: ", args.init_e)
 
@@ -61,7 +64,7 @@ print("Init Epsilon: ", args.init_e)
 
 if args.load_model == "True":
 	print("loading model",args.model_name)
-	model.load_state_dict(torch.load(args.model_name))
+	model.load_state_dict(torch.load(args.model_name,map_location=device))
 
 
 if args.mode == "Train":

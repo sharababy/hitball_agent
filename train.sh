@@ -11,4 +11,4 @@ python3 main.py \
 --exploration 10000 \
 --max_episode 20000 \
 --save_checkpoint_freq 10 \
---mode Train
+--mode Test
