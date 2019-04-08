@@ -50,25 +50,25 @@ class BrainDQN(nn.Module):
 		""" Create dqn, invoked by `__init__`
 		    model structure: conv->conv->fc->fc
 		"""
-		self.conv1a = nn.Conv2d(BrainDQN.input_channels,8, kernel_size=7, stride=5, padding=0)
+		self.conv1a = nn.Conv2d(BrainDQN.input_channels,32, kernel_size=7, stride=2, padding=0)
 		self.relu1a = nn.ReLU(inplace=True)
-		self.conv1 = nn.Conv2d(8,16, kernel_size=5, stride=4, padding=0)
+		self.conv1 = nn.Conv2d(32,64,kernel_size=5,stride=2, padding=0)
 		self.relu1 = nn.ReLU(inplace=True)
-		# self.conv2 = nn.Conv2d(16,32, kernel_size=3, stride=2, padding=0)
-		# self.relu2 = nn.ReLU(inplace=True)
+		self.conv2 = nn.Conv2d(64,128, kernel_size=3, stride=2, padding=0)
+		self.relu2 = nn.ReLU(inplace=True)
 		# self.conv3 = nn.Conv2d(32,64, kernel_size=3, stride=1, padding=0)
 		# self.relu7 = nn.ReLU(inplace=True)
-		self.map_size = (16, 3, 4)
+		self.map_size = (128, 7, 10)
 		fs = self.map_size[0]*self.map_size[1]*self.map_size[2]
-		self.fc1 = nn.Linear(fs, 1024)
+		self.fc1 = nn.Linear(fs, 256)
 		self.relu3 = nn.ReLU(inplace=True)
-		self.fc2 = nn.Linear(1024, 512)
-		self.relu4 = nn.ReLU(inplace=True)
-		self.fc3 = nn.Linear(512, 256)
-		self.relu5 = nn.ReLU(inplace=True)
-		self.fc4 = nn.Linear(256,64)
-		self.relu6 = nn.ReLU(inplace=True)
-		self.fc5 = nn.Linear(64, self.actions)
+		# self.fc2 = nn.Linear(1024, 512)
+		# self.relu4 = nn.ReLU(inplace=True)
+		# self.fc3 = nn.Linear(512, 256)
+		# self.relu5 = nn.ReLU(inplace=True)
+		# self.fc4 = nn.Linear(256,64)
+		# self.relu6 = nn.ReLU(inplace=True)
+		self.fc5 = nn.Linear(256, self.actions)
 
 
 	def get_q_value(self, o):
@@ -83,9 +83,9 @@ class BrainDQN(nn.Module):
 		out = self.conv1(out)
 		# print(out.shape)
 		out = self.relu1(out)
-		# out = self.conv2(out)
+		out = self.conv2(out)
 		# print(out.shape)
-		# out = self.relu2(out)
+		out = self.relu2(out)
 		
 		# out = self.conv3(out)
 		# print(out.shape)
@@ -97,14 +97,14 @@ class BrainDQN(nn.Module):
 		out = self.fc1(out)
 		out = self.relu3(out)
 		# print(out.shape)
-		out = self.fc2(out)
-		out = self.relu4(out)
+		# out = self.fc2(out)
+		# out = self.relu4(out)
 		
-		out = self.fc3(out)
-		out = self.relu5(out)
+		# out = self.fc3(out)
+		# out = self.relu5(out)
 
-		out = self.fc4(out)
-		out = self.relu6(out)
+		# out = self.fc4(out)
+		# out = self.relu6(out)
 
 		out = self.fc5(out)
 		# print(out.shape)
