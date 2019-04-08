@@ -16,8 +16,8 @@ DoNothing
 '''
 
 ACTIONS = 6
-height = 112
-width = 150
+height = 75
+width = 100
 
 class BrainDQN(nn.Module):
 
@@ -50,15 +50,15 @@ class BrainDQN(nn.Module):
 		""" Create dqn, invoked by `__init__`
 		    model structure: conv->conv->fc->fc
 		"""
-		self.conv1a = nn.Conv2d(BrainDQN.input_channels,8, kernel_size=8, stride=7, padding=0)
+		self.conv1a = nn.Conv2d(BrainDQN.input_channels,8, kernel_size=6, stride=4, padding=0)
 		self.relu1a = nn.ReLU(inplace=True)
-		self.conv1 = nn.Conv2d(8,16, kernel_size=6, stride=5, padding=0)
+		self.conv1 = nn.Conv2d(8,16, kernel_size=4, stride=3, padding=0)
 		self.relu1 = nn.ReLU(inplace=True)
 		# self.conv2 = nn.Conv2d(16,32, kernel_size=3, stride=2, padding=0)
 		# self.relu2 = nn.ReLU(inplace=True)
 		# self.conv3 = nn.Conv2d(32,64, kernel_size=3, stride=1, padding=0)
 		# self.relu7 = nn.ReLU(inplace=True)
-		self.map_size = (16, 2, 4)
+		self.map_size = (16, 5, 7)
 		fs = self.map_size[0]*self.map_size[1]*self.map_size[2]
 		self.fc1 = nn.Linear(fs, 512)
 		self.relu3 = nn.ReLU(inplace=True)
