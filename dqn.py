@@ -2,6 +2,7 @@ import random
 from collections import deque
 import numpy as np
 import torch
+import torch.functional as f
 import torch.nn as nn
 from torch.autograd import Variable
 import numpy as np
@@ -61,7 +62,8 @@ class BrainDQN(nn.Module):
 		self.map_size = (128, 7, 10)
 		fs = self.map_size[0]*self.map_size[1]*self.map_size[2]
 		self.fc1 = nn.Linear(fs, 256)
-		self.relu3 = nn.ReLU(inplace=True)
+		
+		# self.relu3 = nn.ReLU(inplace=True)
 		# self.fc2 = nn.Linear(1024, 512)
 		# self.relu4 = nn.ReLU(inplace=True)
 		# self.fc3 = nn.Linear(512, 256)
@@ -69,6 +71,7 @@ class BrainDQN(nn.Module):
 		# self.fc4 = nn.Linear(256,64)
 		# self.relu6 = nn.ReLU(inplace=True)
 		self.fc5 = nn.Linear(256, self.actions)
+		
 
 
 	def get_q_value(self, o):
@@ -94,8 +97,9 @@ class BrainDQN(nn.Module):
 		out = out.view(out.size()[0], -1)
 		# print(out.shape)
 		# exit()
-		out = self.fc1(out)
-		out = self.relu3(out)
+		out = torch.sigmoid(self.fc1(out))
+		# out = self.relu3(out)
+
 		# print(out.shape)
 		# out = self.fc2(out)
 		# out = self.relu4(out)
@@ -106,7 +110,8 @@ class BrainDQN(nn.Module):
 		# out = self.fc4(out)
 		# out = self.relu6(out)
 
-		out = self.fc5(out)
+		out = torch.sigmoid(self.fc5(out))
+		
 		# print(out.shape)
 		return out	
 
