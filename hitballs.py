@@ -303,7 +303,7 @@ def GameStart(model,options,optimizer,ceriterion):
             print("time: " + str(round((end - start), 2)) + " seconds.")
 
             if options.mode == "Train" and num_games_played % options.save_checkpoint_freq == 0:
-                print("saving model",num_games_played)
+                print("saving model",num_games_played,model.epsilon)
 
                 torch.save(model.state_dict(),options.model_name)
 
