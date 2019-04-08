@@ -11,7 +11,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 
 import os, sys
-os.environ["SDL_VIDEODRIVER"] = "dummy"
+# os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 def GameStart(model,options,optimizer,ceriterion):
 
