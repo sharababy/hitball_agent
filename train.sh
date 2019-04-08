@@ -5,7 +5,7 @@ python3 main.py \
 --gamma 0.99 \
 --batch_size 32 \
 --memory_size 5000 \
---init_e 0.99 \
+--init_e 0.9 \
 --final_e 0.1 \
 --observation 100 \
 --exploration 10000 \

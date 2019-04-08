@@ -247,7 +247,7 @@ def GameStart(model,options,optimizer,ceriterion):
                 #print(mvsp_baelle)
                 zeit_zaehler = 0
 
-            reward = 1
+            reward = 0
 
             for element in baelle:
                 if player.colliderect(element):
@@ -293,7 +293,7 @@ def GameStart(model,options,optimizer,ceriterion):
         if end == 1:
             x = 1
             # reset reward
-            reward = 1
+            reward = 0
             if model.epsilon > options.final_e:
                 delta = (options.init_e - options.final_e)/options.exploration
                 model.epsilon -= delta
